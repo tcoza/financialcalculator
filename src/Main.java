@@ -5,6 +5,7 @@ import javafx.fxml.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -28,7 +29,7 @@ public class Main extends Application
 	{
 		primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("scene.fxml"))));
 		primaryStage.setTitle("Financial Calculator");
-		primaryStage.setResizable(false);
+		//primaryStage.setResizable(false);
 		primaryStage.show();
 	}
 

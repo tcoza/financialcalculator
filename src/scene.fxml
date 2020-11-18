@@ -9,25 +9,25 @@
 
 <AnchorPane fx:id="mainPane" prefHeight="551.0" prefWidth="797.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main">
    <children>
-      <Text layoutX="28.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Interest Rate:" />
-      <TextField fx:id="interestRateTextField" layoutX="125.0" layoutY="24.0" prefHeight="26.0" prefWidth="122.0" text="10" />
-      <Text layoutX="253.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\%" />
-      <Text layoutX="436.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Present time:" />
-      <TextField fx:id="presentTimeTextField" layoutX="533.0" layoutY="24.0" prefHeight="26.0" prefWidth="73.0" text="0" />
-      <Text layoutX="620.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="End of life:" />
-      <TextField fx:id="endOfLifeTextField" layoutX="700.0" layoutY="24.0" prefHeight="26.0" prefWidth="73.0" />
-      <Text layoutX="25.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cash flows" />
-      <ScrollPane fx:id="cashFlowsScrollPane" layoutX="25.0" layoutY="124.0" maxHeight="321.0" prefHeight="321.0" prefWidth="755" style="-fx-background-color:transparent;" />
-      <Text layoutX="28.0" layoutY="484.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Output Decimal places:" />
-      <Spinner fx:id="decimalPlacesSpinner" editable="true" layoutX="189.0" layoutY="467.0" prefHeight="26.0" prefWidth="116.0" />
-      <Text layoutX="348.0" layoutY="485.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Present Value:" textAlignment="RIGHT" wrappingWidth="160.0" />
-      <TextField fx:id="presentValueTextField" editable="false" layoutX="514.0" layoutY="467.0" onAction="#solve" prefHeight="26.0" prefWidth="180.0" />
-      <Text layoutX="348.0" layoutY="519.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Effective Annual Value:" textAlignment="RIGHT" wrappingWidth="160.0" />
-      <TextField fx:id="EAVTextField" editable="false" layoutX="514.0" layoutY="501.0" onAction="#solve" prefHeight="26.0" prefWidth="180.0" />
-      <Button fx:id="copyPresentValue" layoutX="700.0" layoutY="466.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="73.0" text="Copy" />
-      <Button fx:id="copyEAV" layoutX="700.0" layoutY="501.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="73.0" text="Copy" />
-      <Text fx:id="missingValueIndicatorLabel" layoutX="435.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="?:" textAlignment="RIGHT" wrappingWidth="30" />
-      <TextField fx:id="missingValueTextField" editable="false" layoutX="472.0" layoutY="80.0" prefHeight="26.0" prefWidth="220.0" />
-      <Button fx:id="copyMissingValue" layoutX="700.0" layoutY="79.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="73.0" text="Copy" />
+      <Text layoutX="28.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Interest Rate:" AnchorPane.leftAnchor="28.0" AnchorPane.topAnchor="28.0" />
+      <TextField fx:id="interestRateTextField" layoutX="125.0" layoutY="24.0" prefHeight="26.0" prefWidth="122.0" text="10" AnchorPane.leftAnchor="125.0" AnchorPane.topAnchor="24.0" />
+      <Text layoutX="253.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\%" AnchorPane.leftAnchor="253.0" AnchorPane.topAnchor="28.0" />
+      <Text layoutX="436.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Present time:" AnchorPane.rightAnchor="273.82763671875" AnchorPane.topAnchor="28.0" />
+      <TextField fx:id="presentTimeTextField" layoutX="533.0" layoutY="24.0" prefHeight="26.0" prefWidth="73.0" text="0" AnchorPane.rightAnchor="191.0" AnchorPane.topAnchor="24.0" />
+      <Text layoutX="620.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="End of life:" AnchorPane.rightAnchor="107.32177734375" AnchorPane.topAnchor="28.0" />
+      <TextField fx:id="endOfLifeTextField" layoutX="700.0" layoutY="24.0" prefHeight="26.0" prefWidth="73.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="24.0" />
+      <Text layoutX="25.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cash flows" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="100.0" />
+      <ScrollPane fx:id="cashFlowsScrollPane" layoutX="25.0" layoutY="124.0" maxHeight="321.0" prefHeight="321.0" prefWidth="755" style="-fx-background-color:transparent;" AnchorPane.bottomAnchor="106.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="124.0" />
+      <Text layoutX="28.0" layoutY="484.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Output Decimal places:" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="28.0" />
+      <Spinner fx:id="decimalPlacesSpinner" editable="true" layoutX="189.0" layoutY="467.0" prefHeight="26.0" prefWidth="116.0" AnchorPane.bottomAnchor="58.0" AnchorPane.leftAnchor="189.0" />
+      <Text layoutX="348.0" layoutY="485.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Present Value:" textAlignment="RIGHT" wrappingWidth="160.0" AnchorPane.bottomAnchor="63.0" AnchorPane.rightAnchor="289.0" />
+      <TextField fx:id="presentValueTextField" editable="false" layoutX="514.0" layoutY="467.0" onAction="#solve" prefHeight="26.0" prefWidth="180.0" AnchorPane.bottomAnchor="58.0" AnchorPane.rightAnchor="103.0" />
+      <Text layoutX="348.0" layoutY="519.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Effective Annual Value:" textAlignment="RIGHT" wrappingWidth="160.0" AnchorPane.bottomAnchor="29.0" AnchorPane.rightAnchor="289.0" />
+      <TextField fx:id="EAVTextField" editable="false" layoutX="514.0" layoutY="501.0" onAction="#solve" prefHeight="26.0" prefWidth="180.0" AnchorPane.bottomAnchor="24.0" AnchorPane.rightAnchor="103.0" />
+      <Button fx:id="copyPresentValue" layoutX="700.0" layoutY="466.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="73.0" text="Copy" AnchorPane.bottomAnchor="59.0" AnchorPane.rightAnchor="24.0" />
+      <Button fx:id="copyEAV" layoutX="700.0" layoutY="501.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="73.0" text="Copy" AnchorPane.bottomAnchor="24.0" AnchorPane.rightAnchor="24.0" />
+      <Text fx:id="missingValueIndicatorLabel" layoutX="435.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="?:" textAlignment="RIGHT" wrappingWidth="30" AnchorPane.rightAnchor="332.0" AnchorPane.topAnchor="85.0" />
+      <TextField fx:id="missingValueTextField" editable="false" layoutX="472.0" layoutY="80.0" prefHeight="26.0" prefWidth="220.0" AnchorPane.rightAnchor="105.0" AnchorPane.topAnchor="80.0" />
+      <Button fx:id="copyMissingValue" layoutX="700.0" layoutY="79.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="73.0" text="Copy" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="80.0" />
    </children>
 </AnchorPane>
