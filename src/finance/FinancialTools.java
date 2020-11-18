@@ -7,9 +7,11 @@ public class FinancialTools
 	public static double annuityToPresentValue(double interestRate)
 		{ return annuityToPresentValue(interestRate, 1); }
 	public static double annuityToPresentValue(double interestRate, double compoundPeriod)
-		{ return annuityToPresentValue(interestRate, Double.POSITIVE_INFINITY, compoundPeriod); }
-	public static double annuityToPresentValue(double interestRate, double time, double compoundPeriod)
+		{ return annuityToPresentValue(interestRate, compoundPeriod, Double.POSITIVE_INFINITY); }
+	public static double annuityToPresentValue(double interestRate, double compoundPeriod, double time)
 	{
+		if (interestRate == 0)
+			return time;
 		if (compoundPeriod == 0)
 			return (1 - futureToPresentValue(interestRate, time)) / Math.log(1 + interestRate);
 		else

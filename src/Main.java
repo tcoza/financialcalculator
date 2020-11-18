@@ -62,10 +62,9 @@ public class Main extends Application
 			double presentTime = toDoubleSpecial(presentTimeTextField.getText());
 			double endOfLife = !endOfLifeTextField.getText().isEmpty() ? toDoubleSpecial(endOfLifeTextField.getText()) : Double.POSITIVE_INFINITY;
 			double presentValue = cashFlows.getPresentValue(interestRate) * FinancialTools.presentToFutureValue(interestRate, presentTime);
-			double EAValue = presentValue / FinancialTools.annuityToPresentValue(interestRate, endOfLife - presentTime, 1);
+			double EAValue = presentValue / FinancialTools.annuityToPresentValue(interestRate, 1, endOfLife - presentTime);
 			String format = "%." + decimalPlacesSpinner.getValue() + "f";
 
-			hadMissingValue = false;
 
 			presentValueTextField.setText(String.format(format, presentValue));
 			EAVTextField.setText(String.format(format, EAValue));
@@ -77,6 +76,7 @@ public class Main extends Application
 			}
 			else
 			{
+				hadMissingValue = false;
 				setMissingValueControlsVisible(false);
 				presentValueTextField.setEditable(false);
 				EAVTextField.setEditable(false);

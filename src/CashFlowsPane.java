@@ -108,15 +108,13 @@ public class CashFlowsPane extends VBox
 				double presentValue = 0;
 				double growth = Main.toDoubleSpecial(this.growth.getText()) / 100;
 				double compoundPeriod = this.compoundPeriod.getValue().getPeriod();
-				int multiplier = 1;
-				for (double year : years)
+				for (int i = 0; i < years.length; i += 2)
 				{
+					double timeSpan = (i + 1 < years.length) ? years[i + 1] - years[i] : Double.POSITIVE_INFINITY;
 					for (double payment : payments)
-						presentValue+=
-								multiplier * payment *
-								FinancialTools.annuityToPresentValue(interestRate - growth, compoundPeriod) *
-								FinancialTools.futureToPresentValue(interestRate, year);
-					multiplier *= -1;
+						presentValue += payment *
+								FinancialTools.annuityToPresentValue(interestRate - growth, compoundPeriod, timeSpan) *
+								FinancialTools.futureToPresentValue(interestRate, years[i]);
 				}
 				return presentValue;
 			}
