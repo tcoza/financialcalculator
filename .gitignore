@@ -1,3 +1,4 @@
-out
-!out/artifacts/FinancialCalculator_jar/FinancialCalculator.jar
-
+out/*
+!out/artifacts
+out/artifacts/*
+!out/artifacts/FinancialCalculator_jar/
