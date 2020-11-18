@@ -36,8 +36,8 @@ public class Main extends Application
 	@FXML
 	public void initialize()
 	{
-		cashFlowsScrollPane.setPrefWidth(755);
 		cashFlowsScrollPane.setContent(cashFlows = new CashFlowsPane());
+		cashFlows.prefWidthProperty().bind(cashFlowsScrollPane.widthProperty().subtract(25));
 		decimalPlacesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,100,2));
 
 		interestRateTextField.textProperty().addListener(e -> refreshPresentValue());

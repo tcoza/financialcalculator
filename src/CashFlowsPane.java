@@ -60,7 +60,8 @@ public class CashFlowsPane extends VBox
 
 			type.setPrefWidth(120);
 			years.setPrefWidth(120);
-			payments.setPrefWidth(150);
+			//payments.setPrefWidth(150);
+			payments.prefWidthProperty().bind(this.widthProperty().subtract(733-150));
 			growth.setPrefWidth(100);
 			compoundPeriod.setPrefWidth(160);
 			deleteCashFlow.setPrefWidth(25);
@@ -86,6 +87,7 @@ public class CashFlowsPane extends VBox
 			this.setSpacing(5);
 			this.getChildren().addAll(active, type, years, payments, growth, compoundPeriod, deleteCashFlow);
 			this.setAlignment(Pos.CENTER_LEFT);
+			this.prefWidthProperty().bind(CashFlowsPane.this.widthProperty());
 			CashFlowsPane.this.getChildren().add(this);
 		}
 
