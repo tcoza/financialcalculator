@@ -130,13 +130,13 @@ public class Main extends Application
 			cashFlowsCheckBox.setAllowIndeterminate(true);
 			cashFlowsCheckBox.setIndeterminate(true);
 		}
-		else if (allChecked)
+		else if (allChecked && !allUnchecked)
 		{
 			cashFlowsCheckBox.setAllowIndeterminate(false);
 			cashFlowsCheckBox.setIndeterminate(false);
 			cashFlowsCheckBox.setSelected(true);
 		}
-		else if (allUnchecked)
+		else
 		{
 			cashFlowsCheckBox.setAllowIndeterminate(false);
 			cashFlowsCheckBox.setIndeterminate(false);
