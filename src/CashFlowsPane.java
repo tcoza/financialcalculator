@@ -1,4 +1,6 @@
 import finance.FinancialTools;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -36,8 +38,8 @@ public class CashFlowsPane extends VBox
 		private final ComboBox<CashFlowType> type = new ComboBox<>();
 		private final TextField years = new TextField();
 		private final TextField payments = new TextField();
-		private final TextField growth = new TextField();
 		private final ComboBox<CashFlowCompoundPeriod> compoundPeriod = new ComboBox<>();
+		private final TextField growth = new TextField();
 		private final Button deleteCashFlow = new Button("×");
 
 		public CashFlow()
@@ -50,28 +52,28 @@ public class CashFlowsPane extends VBox
 
 			years.visibleProperty().bind(type.valueProperty().isNotNull());
 			payments.visibleProperty().bind(type.valueProperty().isNotNull());
-			growth.visibleProperty().bind(type.valueProperty().isEqualTo(CashFlowType.ANNUITY));
-			compoundPeriod.visibleProperty().bind(type.valueProperty().isEqualTo(CashFlowType.ANNUITY));
+			growth.visibleProperty().bind(type.valueProperty().isEqualTo(CashFlowType.ANNUITY_UNIFORM).or(type.valueProperty().isEqualTo(CashFlowType.ANNUITY_EXPONENT)));
+			compoundPeriod.visibleProperty().bind(type.valueProperty().isEqualTo(CashFlowType.ANNUITY).or(type.valueProperty().isEqualTo(CashFlowType.ANNUITY_UNIFORM)).or(type.valueProperty().isEqualTo(CashFlowType.ANNUITY_EXPONENT)));
 			deleteCashFlow.visibleProperty().bind(type.valueProperty().isNotNull());
 
 			years.setPromptText("Time(s)");
 			payments.setPromptText("Payment(s)");
-			growth.setPromptText("Growth (%)");
+			growth.promptTextProperty().bind(Bindings.createStringBinding(() -> (type.getValue() == CashFlowType.ANNUITY_EXPONENT ? "Growth (%)" : "Growth"), type.valueProperty()));
 
-			type.setPrefWidth(120);
-			years.setPrefWidth(120);
-			//payments.setPrefWidth(150);
-			payments.prefWidthProperty().bind(this.widthProperty().subtract(733-150));
-			growth.setPrefWidth(100);
-			compoundPeriod.setPrefWidth(160);
+			type.setPrefWidth(150);
+			years.setPrefWidth(130);
+			//payments.setPrefWidth(220);
+			payments.prefWidthProperty().bind(this.widthProperty().subtract(833-200));
+			compoundPeriod.setPrefWidth(140);
+			growth.setPrefWidth(130);
 			deleteCashFlow.setPrefWidth(25);
 
 			active.selectedProperty().addListener(e -> CashFlowsPane.this.onPresentValueChanged.run());
 			type.valueProperty().addListener(e -> CashFlowsPane.this.onPresentValueChanged.run());
 			years.textProperty().addListener(e -> CashFlowsPane.this.onPresentValueChanged.run());
 			payments.textProperty().addListener(e -> CashFlowsPane.this.onPresentValueChanged.run());
-			growth.textProperty().addListener(e -> CashFlowsPane.this.onPresentValueChanged.run());
 			compoundPeriod.valueProperty().addListener(e -> CashFlowsPane.this.onPresentValueChanged.run());
+			growth.textProperty().addListener(e -> CashFlowsPane.this.onPresentValueChanged.run());
 			type.valueProperty().addListener((e, oldValue, newValue) ->
 			{
 				if (oldValue != null) return;
@@ -85,7 +87,7 @@ public class CashFlowsPane extends VBox
 			});
 
 			this.setSpacing(5);
-			this.getChildren().addAll(active, type, years, payments, growth, compoundPeriod, deleteCashFlow);
+			this.getChildren().addAll(active, type, years, payments, compoundPeriod, growth, deleteCashFlow);
 			this.setAlignment(Pos.CENTER_LEFT);
 			this.prefWidthProperty().bind(CashFlowsPane.this.widthProperty());
 			CashFlowsPane.this.getChildren().add(this);
@@ -105,18 +107,25 @@ public class CashFlowsPane extends VBox
 						presentValue += payment * FinancialTools.futureToPresentValue(interestRate, year);
 				return presentValue;
 			}
-			if (type.getValue() == CashFlowType.ANNUITY)
+			if (type.getValue() == CashFlowType.ANNUITY || type.getValue() == CashFlowType.ANNUITY_EXPONENT || type.getValue() == CashFlowType.ANNUITY_UNIFORM)
 			{
 				double presentValue = 0;
-				double growth = Main.toDoubleSpecial(this.growth.getText()) / 100;
 				double compoundPeriod = this.compoundPeriod.getValue().getPeriod();
+				double growthRate = 0;
+				if (type.getValue() == CashFlowType.ANNUITY_EXPONENT)
+					growthRate = Main.toDoubleSpecial(this.growth.getText()) / 100;
+				double growthUniform = 0;
+				if (type.getValue() == CashFlowType.ANNUITY_UNIFORM)
+					growthUniform = Main.toDoubleSpecial(this.growth.getText());
 				for (int i = 0; i < years.length; i += 2)
 				{
 					double timeSpan = (i + 1 < years.length) ? years[i + 1] - years[i] : Double.POSITIVE_INFINITY;
 					for (double payment : payments)
-						presentValue += payment *
-								FinancialTools.annuityToPresentValue(interestRate - growth, compoundPeriod, timeSpan) *
+					{
+						presentValue += (payment + growthUniform * FinancialTools.uniformGrowthToAnnuity(interestRate, timeSpan)) *
+								FinancialTools.annuityToPresentValue(interestRate - growthRate, compoundPeriod, timeSpan) *
 								FinancialTools.futureToPresentValue(interestRate, years[i]);
+					}
 				}
 				return presentValue;
 			}
@@ -138,12 +147,14 @@ public class CashFlowsPane extends VBox
 	{
 		public static final CashFlowType ONETIME = new CashFlowType("One-time");
 		public static final CashFlowType ANNUITY = new CashFlowType("Annuity");
+		public static final CashFlowType ANNUITY_UNIFORM = new CashFlowType("Annuity (uniform growth)");
+		public static final CashFlowType ANNUITY_EXPONENT = new CashFlowType("Annuity (geometric growth)");
 
 		public final String name;
 		private CashFlowType(String name) { this.name = name; }
 		@Override public String toString() { return this.name; }
 
-		public static CashFlowType[] getAll() { return new CashFlowType[] {ONETIME, ANNUITY}; }
+		public static CashFlowType[] getAll() { return new CashFlowType[] {ONETIME, ANNUITY, ANNUITY_UNIFORM, ANNUITY_EXPONENT}; }
 	}
 
 	private static class CashFlowCompoundPeriod

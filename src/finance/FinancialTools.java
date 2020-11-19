@@ -17,4 +17,16 @@ public class FinancialTools
 		else
 			return (1 - futureToPresentValue(interestRate, time)) * compoundPeriod / (Math.pow(1 + interestRate, compoundPeriod) - 1);
 	}
+
+	public static double uniformGrowthToAnnuity(double interestRate, double time)
+	{
+		if (interestRate == 0)
+			return (time - 1) / 2;
+		if (time == 0)
+			return Double.NEGATIVE_INFINITY;
+		if (time == Double.POSITIVE_INFINITY)
+			return 1 / interestRate;
+		else
+			return 1 / interestRate - time / (Math.pow(1 + interestRate, time) - 1);
+	}
 }

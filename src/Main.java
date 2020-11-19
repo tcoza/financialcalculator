@@ -126,7 +126,8 @@ public class Main extends Application
 		targetValue, marginOfError, tentativeValue);
 		Main.solutionInput = missingValue;
 		refreshPresentValue();
-		Main.solving = false;
+		Main.solving
+= false;
 		this.missingValueTextField.setText(String.valueOf(missingValue));
 		setMissingValueControlsVisible(true);
 	}
