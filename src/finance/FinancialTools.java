@@ -29,4 +29,12 @@ public class FinancialTools
 		else
 			return 1 / interestRate - time / (Math.pow(1 + interestRate, time) - 1);
 	}
+
+	public static double exponentialGrowthToPresentValue(double interestRate, double time, double growth)
+	{
+		if (interestRate == growth)
+			return time / (growth + 1);
+		else
+			return (Math.pow((growth + 1) / (interestRate + 1), time) - 1) / (growth - interestRate);
+	}
 }

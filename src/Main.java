@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application
 {
+	@FXML public CheckBox cashFlowsCheckBox;
 	@FXML public ScrollPane cashFlowsScrollPane;
 	@FXML public TextField interestRateTextField;
 	@FXML public TextField presentTimeTextField;
@@ -40,6 +41,7 @@ public class Main extends Application
 		cashFlows.prefWidthProperty().bind(cashFlowsScrollPane.widthProperty().subtract(25));
 		decimalPlacesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,100,2));
 
+		cashFlowsCheckBox.selectedProperty().addListener(e -> cashFlows.getCashFlowControls().forEach(cf -> cf.active.setSelected(cashFlowsCheckBox.isSelected())));
 		interestRateTextField.textProperty().addListener(e -> refreshPresentValue());
 		presentTimeTextField.textProperty().addListener(e -> refreshPresentValue());
 		endOfLifeTextField.textProperty().addListener(e -> refreshPresentValue());

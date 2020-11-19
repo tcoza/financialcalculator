@@ -7,6 +7,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.util.StringConverter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class CashFlowsPane extends VBox
@@ -23,18 +25,23 @@ public class CashFlowsPane extends VBox
 	public double getPresentValue(double interestRate)
 	{
 		double presentValue = 0;
-		for (Node n : this.getChildren())
-		{
-			if (!(n instanceof CashFlow)) continue;
-			CashFlow cf = (CashFlow)n;
+		for (CashFlow cf : this.getCashFlowControls())
 			presentValue += cf.presentValue(interestRate);
-		}
 		return presentValue;
+	}
+
+	public List<CashFlow> getCashFlowControls()
+	{
+		List<CashFlow> cashFlows = new ArrayList<>();
+		for (Node n : this.getChildren())
+			if (n instanceof CashFlow)
+				cashFlows.add((CashFlow)n);
+		return cashFlows;
 	}
 
 	public class CashFlow extends HBox
 	{
-		private final CheckBox active = new CheckBox();
+		public final CheckBox active = new CheckBox();
 		private final ComboBox<CashFlowType> type = new ComboBox<>();
 		private final TextField years = new TextField();
 		private final TextField payments = new TextField();
@@ -52,8 +59,8 @@ public class CashFlowsPane extends VBox
 
 			years.visibleProperty().bind(type.valueProperty().isNotNull());
 			payments.visibleProperty().bind(type.valueProperty().isNotNull());
+			compoundPeriod.visibleProperty().bind(type.valueProperty().isEqualTo(CashFlowType.ANNUITY));
 			growth.visibleProperty().bind(type.valueProperty().isEqualTo(CashFlowType.ANNUITY_UNIFORM).or(type.valueProperty().isEqualTo(CashFlowType.ANNUITY_EXPONENT)));
-			compoundPeriod.visibleProperty().bind(type.valueProperty().isEqualTo(CashFlowType.ANNUITY).or(type.valueProperty().isEqualTo(CashFlowType.ANNUITY_UNIFORM)).or(type.valueProperty().isEqualTo(CashFlowType.ANNUITY_EXPONENT)));
 			deleteCashFlow.visibleProperty().bind(type.valueProperty().isNotNull());
 
 			years.setPromptText("Time(s)");
@@ -99,37 +106,53 @@ public class CashFlowsPane extends VBox
 				return 0;
 			double[] years = splitNum(this.years.getText());
 			double[] payments = splitNum(this.payments.getText());
+			double presentValue = 0;
+
 			if (type.getValue() == CashFlowType.ONETIME)
 			{
-				double presentValue = 0;
 				for (double year : years)
 					for (double payment : payments)
 						presentValue += payment * FinancialTools.futureToPresentValue(interestRate, year);
-				return presentValue;
 			}
-			if (type.getValue() == CashFlowType.ANNUITY || type.getValue() == CashFlowType.ANNUITY_EXPONENT || type.getValue() == CashFlowType.ANNUITY_UNIFORM)
+			else if (type.getValue() == CashFlowType.ANNUITY)
 			{
-				double presentValue = 0;
 				double compoundPeriod = this.compoundPeriod.getValue().getPeriod();
-				double growthRate = 0;
-				if (type.getValue() == CashFlowType.ANNUITY_EXPONENT)
-					growthRate = Main.toDoubleSpecial(this.growth.getText()) / 100;
-				double growthUniform = 0;
-				if (type.getValue() == CashFlowType.ANNUITY_UNIFORM)
-					growthUniform = Main.toDoubleSpecial(this.growth.getText());
 				for (int i = 0; i < years.length; i += 2)
 				{
 					double timeSpan = (i + 1 < years.length) ? years[i + 1] - years[i] : Double.POSITIVE_INFINITY;
 					for (double payment : payments)
-					{
-						presentValue += (payment + growthUniform * FinancialTools.uniformGrowthToAnnuity(interestRate, timeSpan)) *
-								FinancialTools.annuityToPresentValue(interestRate - growthRate, compoundPeriod, timeSpan) *
+						presentValue += payment *
+								FinancialTools.annuityToPresentValue(interestRate, compoundPeriod, timeSpan) *
 								FinancialTools.futureToPresentValue(interestRate, years[i]);
-					}
 				}
-				return presentValue;
 			}
-			return Double.NaN;
+			else if (type.getValue() == CashFlowType.ANNUITY_EXPONENT)
+			{
+				double growth = Main.toDoubleSpecial(this.growth.getText()) / 100;
+				for (int i = 0; i < years.length; i += 2)
+				{
+					double timeSpan = (i + 1 < years.length) ? years[i + 1] - years[i] : Double.POSITIVE_INFINITY;
+					for (double payment : payments)
+						presentValue += payment *
+												FinancialTools.exponentialGrowthToPresentValue(interestRate, timeSpan, growth) *
+												FinancialTools.futureToPresentValue(interestRate, years[i]);
+				}
+			}
+			else if (type.getValue() == CashFlowType.ANNUITY_UNIFORM)
+			{
+				double growth = Main.toDoubleSpecial(this.growth.getText());
+				for (int i = 0; i < years.length; i += 2)
+				{
+					double timeSpan = (i + 1 < years.length) ? years[i + 1] - years[i] : Double.POSITIVE_INFINITY;
+					for (double payment : payments)
+						presentValue += (payment + growth * FinancialTools.uniformGrowthToAnnuity(interestRate, timeSpan)) *
+												FinancialTools.annuityToPresentValue(interestRate, 1, timeSpan) *
+												FinancialTools.futureToPresentValue(interestRate, years[i]);
+				}
+			}
+			else return Double.NaN;
+
+			return presentValue;
 		}
 
 		private double[] splitNum(String str)
