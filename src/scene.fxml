@@ -17,7 +17,7 @@
       <TextField fx:id="presentTimeTextField" layoutX="533.0" layoutY="24.0" prefHeight="26.0" prefWidth="73.0" text="0" AnchorPane.rightAnchor="191.0" AnchorPane.topAnchor="24.0" />
       <Text layoutX="620.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="End of life:" AnchorPane.rightAnchor="107.32177734375" AnchorPane.topAnchor="28.0" />
       <TextField fx:id="endOfLifeTextField" layoutX="700.0" layoutY="24.0" prefHeight="26.0" prefWidth="73.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="24.0" />
-      <CheckBox text="  Cash flows" fx:id="cashFlowsCheckBox" AnchorPane.leftAnchor="26.0" AnchorPane.topAnchor="90.0" />
+      <CheckBox text="  Cash flows" fx:id="cashFlowsCheckBox" allowIndeterminate="true" AnchorPane.leftAnchor="26.0" AnchorPane.topAnchor="90.0" />
       <ScrollPane fx:id="cashFlowsScrollPane" layoutX="25.0" layoutY="124.0" maxHeight="321.0" prefHeight="321.0" prefWidth="755" style="-fx-background-color:transparent;" AnchorPane.bottomAnchor="106.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="124.0" />
       <Text layoutX="28.0" layoutY="484.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Output Decimal places:" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="28.0" />
       <Spinner fx:id="decimalPlacesSpinner" editable="true" layoutX="189.0" layoutY="467.0" prefHeight="26.0" prefWidth="116.0" AnchorPane.bottomAnchor="58.0" AnchorPane.leftAnchor="189.0" />

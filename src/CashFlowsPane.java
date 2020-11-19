@@ -34,7 +34,7 @@ public class CashFlowsPane extends VBox
 	{
 		List<CashFlow> cashFlows = new ArrayList<>();
 		for (Node n : this.getChildren())
-			if (n instanceof CashFlow)
+			if (n instanceof CashFlow && ((CashFlow)n).type.getValue() != null)
 				cashFlows.add((CashFlow)n);
 		return cashFlows;
 	}

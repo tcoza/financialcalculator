@@ -41,7 +41,8 @@ public class Main extends Application
 		cashFlows.prefWidthProperty().bind(cashFlowsScrollPane.widthProperty().subtract(25));
 		decimalPlacesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,100,2));
 
-		cashFlowsCheckBox.selectedProperty().addListener(e -> cashFlows.getCashFlowControls().forEach(cf -> cf.active.setSelected(cashFlowsCheckBox.isSelected())));
+		cashFlowsCheckBox.selectedProperty().addListener(e -> cashFlowsCheckBoxValueChanged());
+		cashFlowsCheckBox.indeterminateProperty().addListener(e -> cashFlowsCheckBoxValueChanged());
 		interestRateTextField.textProperty().addListener(e -> refreshPresentValue());
 		presentTimeTextField.textProperty().addListener(e -> refreshPresentValue());
 		endOfLifeTextField.textProperty().addListener(e -> refreshPresentValue());
@@ -61,6 +62,8 @@ public class Main extends Application
 	{
 		try
 		{
+			refreshCashFlowsCheckBox();
+
 			double interestRate = toDoubleSpecial(interestRateTextField.getText()) / 100;
 			double presentTime = toDoubleSpecial(presentTimeTextField.getText());
 			double endOfLife = !endOfLifeTextField.getText().isEmpty() ? toDoubleSpecial(endOfLifeTextField.getText()) : Double.POSITIVE_INFINITY;
@@ -100,6 +103,44 @@ public class Main extends Application
 		{
 			presentValueTextField.setText(ex.getMessage());
 			EAVTextField.setText(ex.getMessage());
+		}
+	}
+
+	public void cashFlowsCheckBoxValueChanged()
+	{
+		if (!cashFlowsCheckBox.isIndeterminate())
+		{
+			for (CashFlowsPane.CashFlow cf : cashFlows.getCashFlowControls())
+				cf.active.setSelected(cashFlowsCheckBox.isSelected());
+			cashFlowsCheckBox.setAllowIndeterminate(false);
+		}
+	}
+
+	public void refreshCashFlowsCheckBox()
+	{
+		boolean allChecked = true;
+		boolean allUnchecked = true;
+		for (CashFlowsPane.CashFlow cf : cashFlows.getCashFlowControls())
+		{
+			allChecked &= cf.active.isSelected();
+			allUnchecked &= !cf.active.isSelected();
+		}
+		if (!allChecked && !allUnchecked)
+		{
+			cashFlowsCheckBox.setAllowIndeterminate(true);
+			cashFlowsCheckBox.setIndeterminate(true);
+		}
+		else if (allChecked)
+		{
+			cashFlowsCheckBox.setAllowIndeterminate(false);
+			cashFlowsCheckBox.setIndeterminate(false);
+			cashFlowsCheckBox.setSelected(true);
+		}
+		else if (allUnchecked)
+		{
+			cashFlowsCheckBox.setAllowIndeterminate(false);
+			cashFlowsCheckBox.setIndeterminate(false);
+			cashFlowsCheckBox.setSelected(false);
 		}
 	}
 
