@@ -1,6 +1,9 @@
 import finance.FinancialTools;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -49,17 +52,37 @@ public class Main extends Application
 		decimalPlacesSpinner.valueProperty().addListener(e -> refreshPresentValue());
 		cashFlows.setOnPresentValueChanged(this::refreshPresentValue);
 
-		copyPresentValue.setOnAction(e -> toClipboard(presentValueTextField.getText()));
-		copyEAV.setOnAction(e -> toClipboard(EAVTextField.getText()));
+		StringBinding copyButtonText = Bindings.createStringBinding(() -> presentValueTextField.isEditable() ? "Solve" : "Copy", presentValueTextField.editableProperty());
+		EventHandler<ActionEvent> copyOrSolve = e ->
+		{
+			TextField source =
+					(e.getSource() instanceof TextField) ?
+					(TextField)e.getSource() :
+					(e.getSource() == copyPresentValue) ?
+					presentValueTextField :
+					EAVTextField;
+
+			if (source.isEditable())
+				solve(new ActionEvent(source, null));
+			else
+				toClipboard(source.getText());
+		};
+		copyPresentValue.textProperty().bind(copyButtonText);
+		copyEAV.textProperty().bind(copyButtonText);
+		copyPresentValue.setOnAction(copyOrSolve);
+		copyEAV.setOnAction(copyOrSolve);
 		copyMissingValue.setOnAction(e -> toClipboard(missingValueTextField.getText()));
 
 		refreshPresentValue();
 	}
 
 	private CashFlowsPane cashFlows;
-	private boolean hadMissingValue = false;
+	private boolean disableRefresh = false;
 	private void refreshPresentValue()
 	{
+		if (disableRefresh) return;
+		disableRefresh = true;
+
 		try
 		{
 			refreshCashFlowsCheckBox();
@@ -71,18 +94,11 @@ public class Main extends Application
 			double EAValue = presentValue / FinancialTools.annuityToPresentValue(interestRate, 1, endOfLife - presentTime);
 			String format = "%." + decimalPlacesSpinner.getValue() + "f";
 
-
 			presentValueTextField.setText(String.format(format, presentValue));
 			EAVTextField.setText(String.format(format, EAValue));
 
-			if (solving)
+			if (!solving)
 			{
-				presentValueTextField.selectAll();
-				EAVTextField.selectAll();
-			}
-			else
-			{
-				hadMissingValue = false;
 				setMissingValueControlsVisible(false);
 				presentValueTextField.setEditable(false);
 				EAVTextField.setEditable(false);
@@ -92,11 +108,8 @@ public class Main extends Application
 		{
 			presentValueTextField.setEditable(true);
 			EAVTextField.setEditable(true);
-			presentValueTextField.selectAll();
-			EAVTextField.selectAll();
-			if (!hadMissingValue)
-				presentValueTextField.requestFocus();
-			hadMissingValue = true;
+			presentValueTextField.clear();
+			EAVTextField.clear();
 			Main.solutionInput = ex.tentative;
 		}
 		catch (Exception ex)
@@ -104,15 +117,22 @@ public class Main extends Application
 			presentValueTextField.setText(ex.getMessage());
 			EAVTextField.setText(ex.getMessage());
 		}
+		finally
+		{
+			disableRefresh = false;
+		}
 	}
 
 	public void cashFlowsCheckBoxValueChanged()
 	{
 		if (!cashFlowsCheckBox.isIndeterminate())
 		{
+			disableRefresh = true;
 			for (CashFlowsPane.CashFlow cf : cashFlows.getCashFlowControls())
 				cf.active.setSelected(cashFlowsCheckBox.isSelected());
 			cashFlowsCheckBox.setAllowIndeterminate(false);
+			disableRefresh = false;
+			refreshPresentValue();
 		}
 	}
 
@@ -168,11 +188,11 @@ public class Main extends Application
 		},
 		targetValue, marginOfError, tentativeValue);
 		Main.solutionInput = missingValue;
-		refreshPresentValue();
-		Main.solving
-= false;
+		Main.solving = false;
 		this.missingValueTextField.setText(String.valueOf(missingValue));
 		setMissingValueControlsVisible(true);
+		missingValueTextField.selectAll();
+		missingValueTextField.requestFocus();
 	}
 
 	private void setMissingValueControlsVisible(boolean visible)
