@@ -1,5 +1,2 @@
-out/*
-!out/artifacts
-out/artifacts/*
-!out/artifacts/FinancialCalculator_jar/
+out
 target
