@@ -36,6 +36,8 @@ public class Main extends Application
 		primaryStage.show();
 	}
 
+	//public static void main(String[] args) { System.out.println("Here!"); launch(args); }
+
 	@FXML
 	public void initialize()
 	{
